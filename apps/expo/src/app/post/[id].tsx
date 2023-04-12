@@ -1,12 +1,21 @@
-import { SafeAreaView, Text, View } from "react-native";
-import { SplashScreen, Stack, useSearchParams } from "expo-router";
+import { Button, SafeAreaView, Text, View } from "react-native";
+import { SplashScreen, Stack, useRouter, useSearchParams } from "expo-router";
 
 import { api } from "../../utils/api";
 
 const Post: React.FC = () => {
+  const router = useRouter();
+  const utils = api.useContext();
+
   const { id } = useSearchParams();
   if (!id || typeof id !== "string") throw new Error("unreachable");
   const { data } = api.post.byId.useQuery({ id });
+
+  const { mutate } = api.post.delete.useMutation({
+    onSettled: async () => {
+      await utils.post.all.invalidate();
+    },
+  });
 
   if (!data) return <SplashScreen />;
 
@@ -16,6 +25,13 @@ const Post: React.FC = () => {
       <View className="h-full w-full p-4">
         <Text className="py-2 text-3xl font-bold text-white">{data.title}</Text>
         <Text className="py-4 text-white">{data.content}</Text>
+        <Button
+          title="Delete"
+          onPress={() => {
+            mutate(id);
+            router.back();
+          }}
+        />
       </View>
     </SafeAreaView>
   );

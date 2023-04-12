@@ -4,9 +4,9 @@
   "main": "index.tsx",
   "scripts": {
     "clean": "git clean -xdf .expo .turbo node_modules",
-    "dev": "expo start --ios",
-    "dev:android": "expo start --android",
-    "dev:ios": "expo start --ios",
+    "dev": "expo start --ios --android",
+    "dev:android": "emulator -avd \"Pixel 2 API UpsideDownCake\" && expo start --android",
+    "dev:ios": "open -a Simulator && expo start --ios",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit"
